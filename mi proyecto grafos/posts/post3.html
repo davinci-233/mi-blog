@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Algoritmos de Recorrido: BFS y DFS - Blog Técnico</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">📊 Blog Grafos</h1>
+            <ul class="nav-links">
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="post1.html">Post 1: Introducción</a></li>
+                <li><a href="post2.html">Post 2: Representación</a></li>
+                <li><a href="post3.html" class="active">Post 3: Algoritmos</a></li>
+                <li><a href="../index.html#about">Sobre</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Contenido del Artículo -->
+    <main class="container">
+        <article class="article">
+            <h1>Algoritmos Fundamentales de Recorrido: BFS y DFS</h1>
+            <div class="article-meta">
+                <span>Categoría: Algoritmos | Lectura estimada: 15 minutos</span>
+            </div>
+
+            <h2>Introducción</h2>
+            <p>
+                Una de las tareas fundamentales al trabajar con grafos es explorar o recorrer todos sus nodos. 
+                Existen dos algoritmos principales para hacer esto: 
+                <strong>Breadth-First Search (BFS)</strong> y <strong>Depth-First Search (DFS)</strong>. 
+                Ambos tienen diferentes características y aplicaciones.
+            </p>
+
+            <h2>1. Búsqueda en Amplitud (BFS - Breadth-First Search)</h2>
+            <p>
+                <strong>BFS</strong> es un algoritmo que explora un grafo nivel por nivel, 
+                comenzando desde un nodo origen. Visita primero todos los vecinos directos del nodo, 
+                luego todos los vecinos de esos vecinos, y así sucesivamente.
+            </p>
+
+            <h3>Características</h3>
+            <ul>
+                <li><strong>Estructura de Datos:</strong> Utiliza una <strong>Cola (Queue)</strong></li>
+                <li><strong>Complejidad Temporal:</strong> O(V + E), donde V = vértices, E = aristas</li>
+                <li><strong>Complejidad Espacial:</strong> O(V)</li>
+                <li><strong>Orden de Visita:</strong> Nivel por nivel (amplitud)</li>
+            </ul>
+
+            <h3>Algoritmo Paso a Paso</h3>
+            <ol>
+                <li>Marcar el nodo inicial como visitado y agregarlo a la cola</li>
+                <li>Mientras la cola no esté vacía:
+                    <ol>
+                        <li>Desencolar un nodo de la cola</li>
+                        <li>Para cada vecino no visitado del nodo:
+                            <ol>
+                                <li>Marcarlo como visitado</li>
+                                <li>Agregarlo a la cola</li>
+                            </ol>
+                        </li>
+                    </ol>
+                </li>
+            </ol>
+
+            <h3>Implementación en JavaScript</h3>
+            <div class="code-block">
+class GrafoBFS {
+    constructor(numNodos) {
+        this.numNodos = numNodos;
+        this.adyacencia = Array(numNodos)
+            .fill(null)
+            .map(() => []);
+    }
+
+    agregarArista(u, v) {
+        this.adyacencia[u].push(v);
+        this.adyacencia[v].push(u);
+    }
+
+    BFS(nodoInicial) {
+        const visitado = Array(this.numNodos).fill(false);
+        const resultado = [];
+        const cola = [nodoInicial];
+        
+        visitado[nodoInicial] = true;
+
+        while (cola.length > 0) {
+            const nodo = cola.shift();
+            resultado.push(nodo);
+
+            for (let vecino of this.adyacencia[nodo]) {
+                if (!visitado[vecino]) {
+                    visitado[vecino] = true;
+                    cola.push(vecino);
+                }
+            }
+        }
+
+        return resultado;
+    }
+}
+
+// Uso
+const grafo = new GrafoBFS(6);
+grafo.agregarArista(0, 1);
+grafo.agregarArista(0, 2);
+grafo.agregarArista(1, 3);
+grafo.agregarArista(2, 4);
+grafo.agregarArista(3, 5);
+
+console.log(grafo.BFS(0)); // [0, 1, 2, 3, 4, 5]
+            </div>
+
+            <h3>Aplicaciones de BFS</h3>
+            <ul>
+                <li><strong>Encontrar Camino Más Corto:</strong> En grafos no ponderados</li>
+                <li><strong>Distancia Mínima:</strong> Entre dos nodos</li>
+                <li><strong>Redes Sociales:</strong> Encontrar amigos de amigos</li>
+                <li><strong>Análisis de Conectividad:</strong> Verificar si dos nodos están conectados</li>
+                <li><strong>Web Crawling:</strong> Explorar enlaces desde un sitio web</li>
+            </ul>
+
+            <h2>2. Búsqueda en Profundidad (DFS - Depth-First Search)</h2>
+            <p>
+                <strong>DFS</strong> es un algoritmo que explora un grafo de manera profunda, 
+                avanzando lo más lejos posible en cada rama antes de retroceder. 
+                Contrario a BFS, DFS va en profundidad primero.
+            </p>
+
+            <h3>Características</h3>
+            <ul>
+                <li><strong>Estructura de Datos:</strong> Utiliza una <strong>Pila (Stack)</strong> o recursión</li>
+                <li><strong>Complejidad Temporal:</strong> O(V + E)</li>
+                <li><strong>Complejidad Espacial:</strong> O(V) (recursión) o O(altura del árbol)</li>
+                <li><strong>Orden de Visita:</strong> Profundo primero (profundidad)</li>
+            </ul>
+
+            <h3>Algoritmo Paso a Paso</h3>
+            <ol>
+                <li>Marcar el nodo actual como visitado</li>
+                <li>Para cada vecino no visitado del nodo:
+                    <ol>
+                        <li>Recursivamente llamar DFS en ese vecino</li>
+                    </ol>
+                </li>
+            </ol>
+
+            <h3>Implementación en JavaScript (Recursivo)</h3>
+            <div class="code-block">
+class GrafoDFS {
+    constructor(numNodos) {
+        this.numNodos = numNodos;
+        this.adyacencia = Array(numNodos)
+            .fill(null)
+            .map(() => []);
+    }
+
+    agregarArista(u, v) {
+        this.adyacencia[u].push(v);
+        this.adyacencia[v].push(u);
+    }
+
+    DFS(nodoInicial) {
+        const visitado = Array(this.numNodos).fill(false);
+        const resultado = [];
+
+        const dfsRecursivo = (nodo) => {
+            visitado[nodo] = true;
+            resultado.push(nodo);
+
+            for (let vecino of this.adyacencia[nodo]) {
+                if (!visitado[vecino]) {
+                    dfsRecursivo(vecino);
+                }
+            }
+        };
+
+        dfsRecursivo(nodoInicial);
+        return resultado;
+    }
+
+    // Implementación iterativa con pila
+    DFSIterativo(nodoInicial) {
+        const visitado = Array(this.numNodos).fill(false);
+        const resultado = [];
+        const pila = [nodoInicial];
+
+        while (pila.length > 0) {
+            const nodo = pila.pop();
+            
+            if (!visitado[nodo]) {
+                visitado[nodo] = true;
+                resultado.push(nodo);
+
+                for (let vecino of this.adyacencia[nodo]) {
+                    if (!visitado[vecino]) {
+                        pila.push(vecino);
+                    }
+                }
+            }
+        }
+
+        return resultado;
+    }
+}
+
+// Uso
+const grafo = new GrafoDFS(6);
+grafo.agregarArista(0, 1);
+grafo.agregarArista(0, 2);
+grafo.agregarArista(1, 3);
+grafo.agregarArista(2, 4);
+grafo.agregarArista(3, 5);
+
+console.log(grafo.DFS(0));        // [0, 1, 3, 5, 2, 4]
+console.log(grafo.DFSIterativo(0)); // [0, 1, 3, 5, 2, 4]
+            </div>
+
+            <h3>Aplicaciones de DFS</h3>
+            <ul>
+                <li><strong>Detección de Ciclos:</strong> Identificar si el grafo contiene ciclos</li>
+                <li><strong>Topological Sorting:</strong> Ordenamiento topológico de nodos</li>
+                <li><strong>Conectividad Fuerte:</strong> Encontrar componentes fuertemente conectadas</li>
+                <li><strong>Puzzles y Juegos:</strong> Exploración de estados en espacios de búsqueda</li>
+                <li><strong>Análisis de Dependencias:</strong> En compiladores y sistemas de construcción</li>
+            </ul>
+
+            <h2>Comparación: BFS vs DFS</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Característica</th>
+                        <th>BFS</th>
+                        <th>DFS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Estructura de Datos</strong></td>
+                        <td>Cola (Queue)</td>
+                        <td>Pila (Stack) / Recursión</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Orden de Visita</strong></td>
+                        <td>Nivel por nivel</td>
+                        <td>Profundidad primero</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Complejidad Temporal</strong></td>
+                        <td>O(V + E)</td>
+                        <td>O(V + E)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Complejidad Espacial</strong></td>
+                        <td>O(V)</td>
+                        <td>O(V) o altura del árbol</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Camino Más Corto</strong></td>
+                        <td>✓ Sí (no ponderado)</td>
+                        <td>✗ No siempre</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Detección de Ciclos</strong></td>
+                        <td>✓ Sí</td>
+                        <td>✓ Sí</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Memoria en Grafos Grandes</strong></td>
+                        <td>Puede ser problema</td>
+                        <td>Generalmente mejor</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Visualización Interactiva</h2>
+            <p>
+                A continuación, puedes ver una visualización interactiva de ambos algoritmos operando sobre el mismo grafo.
+            </p>
+
+            <div class="interactive-demo">
+                <h3>Simulador de Algoritmos de Recorrido</h3>
+                <div class="demo-controls">
+                    <button onclick="ejecutarBFS()">▶ Ejecutar BFS</button>
+                    <button onclick="ejecutarDFS()">▶ Ejecutar DFS</button>
+                    <button onclick="resetearDemo()">🔄 Reiniciar</button>
+                </div>
+                <div class="demo-canvas">
+                    <canvas id="grafoCanvas" width="500" height="300"></canvas>
+                </div>
+                <div style="margin-top: 15px;">
+                    <p><strong>Orden de visita:</strong> <span id="visitOrder" style="font-family: monospace; color: #2563eb;"></span></p>
+                </div>
+            </div>
+
+            <h2>Cuándo Usar Cada Uno</h2>
+            <ul>
+                <li><strong>Usar BFS cuando:</strong>
+                    <ul>
+                        <li>Necesitas encontrar el camino más corto en un grafo no ponderado</li>
+                        <li>Deseas explorar nivel por nivel</li>
+                        <li>Buscas encontrar todos los nodos a una distancia específica</li>
+                    </ul>
+                </li>
+                <li><strong>Usar DFS cuando:</strong>
+                    <ul>
+                        <li>Necesitas explorar todas las rutas posibles</li>
+                        <li>Buscas detectar ciclos en el grafo</li>
+                        <li>Necesitas realizar un ordenamiento topológico</li>
+                        <li>Trabajas con espacios de búsqueda muy grandes (mejor eficiencia de memoria)</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>Conclusión</h2>
+            <p>
+                BFS y DFS son dos algoritmos fundamentales para trabajar con grafos. 
+                Aunque ambos tienen la misma complejidad temporal, sus características diferentes 
+                los hacen útiles para distintos tipos de problemas. Entender cuándo y cómo usar cada uno 
+                es crucial para un programador competente.
+            </p>
+            <p>
+                Estos algoritmos sirven como base para algoritmos más complejos como Dijkstra, 
+                A*, Kruskal y muchos otros que son esenciales en la informática moderna.
+            </p>
+
+            <!-- Navegación entre posts -->
+            <div style="margin-top: 50px; padding-top: 30px; border-top: 2px solid #e5e7eb;">
+                <div style="display: flex; justify-content: space-between; gap: 20px;">
+                    <a href="post2.html" style="color: #2563eb; text-decoration: none; font-weight: bold;">← Anterior: Representación de Grafos</a>
+                    <a href="../index.html" style="color: #2563eb; text-decoration: none; font-weight: bold;">Volver al Inicio →</a>
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2025 Blog Técnico Grafos. Creado por <strong>David Vargas</strong></p>
+            <p>Desarrollado con HTML, CSS y JavaScript</p>
+            <div class="footer-links">
+                <a href="https://github.com/davidvargas" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script>
+        // Configuración del grafo para la demo interactiva
+        const grafoDemo = {
+            nodos: [
+                { id: 0, x: 100, y: 100 },
+                { id: 1, x: 200, y: 60 },
+                { id: 2, x: 200, y: 140 },
+                { id: 3, x: 300, y: 30 },
+                { id: 4, x: 300, y: 170 },
+                { id: 5, x: 400, y: 100 }
+            ],
+            aristas: [
+                { from: 0, to: 1 },
+                { from: 0, to: 2 },
+                { from: 1, to: 3 },
+                { from: 2, to: 4 },
+                { from: 3, to: 5 },
+                { from: 4, to: 5 }
+            ]
+        };
+
+        const canvas = document.getElementById('grafoCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function dibujarGrafo(nodosResaltados = []) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Dibujar aristas
+            grafoDemo.aristas.forEach(arista => {
+                const nodoFrom = grafoDemo.nodos[arista.from];
+                const nodoTo = grafoDemo.nodos[arista.to];
+                
+                ctx.strokeStyle = '#1f2937';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(nodoFrom.x, nodoFrom.y);
+                ctx.lineTo(nodoTo.x, nodoTo.y);
+                ctx.stroke();
+            });
+
+            // Dibujar nodos
+            grafoDemo.nodos.forEach(nodo => {
+                const esResaltado = nodosResaltados.includes(nodo.id);
+                
+                ctx.fillStyle = esResaltado ? '#10b981' : '#2563eb';
+                ctx.beginPath();
+                ctx.arc(nodo.x, nodo.y, 20, 0, 2 * Math.PI);
+                ctx.fill();
+
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(nodo.id, nodo.x, nodo.y);
+            });
+        }
+
+        async function ejecutarBFS() {
+            const listaAdyacencia = {
+                0: [1, 2],
+                1: [0, 3],
+                2: [0, 4],
+                3: [1, 5],
+                4: [2, 5],
+                5: [3, 4]
+            };
+
+            const visitado = Array(6).fill(false);
+            const resultado = [];
+            const cola = [0];
+            visitado[0] = true;
+
+            dibujarGrafo([0]);
+            document.getElementById('visitOrder').textContent = 'Iniciando...';
+
+            while (cola.length > 0) {
+                const nodo = cola.shift();
+                resultado.push(nodo);
+                dibujarGrafo(resultado);
+                document.getElementById('visitOrder').textContent = resultado.join(' → ');
+
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                for (let vecino of listaAdyacencia[nodo]) {
+                    if (!visitado[vecino]) {
+                        visitado[vecino] = true;
+                        cola.push(vecino);
+                    }
+                }
+            }
+
+            document.getElementById('visitOrder').textContent = 'Completado: ' + resultado.join(' → ');
+        }
+
+        async function ejecutarDFS() {
+            const listaAdyacencia = {
+                0: [1, 2],
+                1: [0, 3],
+                2: [0, 4],
+                3: [1, 5],
+                4: [2, 5],
+                5: [3, 4]
+            };
+
+            const visitado = Array(6).fill(false);
+            const resultado = [];
+
+            document.getElementById('visitOrder').textContent = 'Iniciando...';
+
+            const dfsRecursivo = async (nodo) => {
+                visitado[nodo] = true;
+                resultado.push(nodo);
+                dibujarGrafo(resultado);
+                document.getElementById('visitOrder').textContent = resultado.join(' → ');
+
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                for (let vecino of listaAdyacencia[nodo]) {
+                    if (!visitado[vecino]) {
+                        await dfsRecursivo(vecino);
+                    }
+                }
+            };
+
+            await dfsRecursivo(0);
+            document.getElementById('visitOrder').textContent = 'Completado: ' + resultado.join(' → ');
+        }
+
+        function resetearDemo() {
+            dibujarGrafo();
+            document.getElementById('visitOrder').textContent = '';
+        }
+
+        // Dibujar el grafo inicialmente
+        dibujarGrafo();
+    </script>
+</body>
+</html>
